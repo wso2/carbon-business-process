@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.business-process</groupId>
         <artifactId>humantask</artifactId>
-        <version>4.4.107-SNAPSHOT</version>
+        <version>4.5.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -146,17 +146,17 @@
                         <configuration>
                             <tasks>
                                 <path id="h2.classpath">
-                                    <path refid="maven.compile.classpath"/>
+                                    <path refid="maven.compile.classpath" />
                                 </path>
 
-                                <echo message="########### Create HT Database ##############"/>
+                                <echo message="########### Create HT Database ##############" />
                                 <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="" url="jdbc:h2:${basedir}/target/database/hth2db;create=true" userid="sa">
                                     <classpath>
-                                        <path refid="h2.classpath"/>
+                                        <path refid="h2.classpath" />
                                     </classpath>
-                                    <fileset file="${basedir}/target/h2.sql"/>
+                                    <fileset file="${basedir}/target/h2.sql" />
                                 </sql>
-                                <echo message="##################### END ############################"/>
+                                <echo message="##################### END ############################" />
                             </tasks>
                         </configuration>
                     </execution>
@@ -168,19 +168,19 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <property name="maven.runtime.classpath" refid="maven.compile.classpath"/>
+                                <property name="maven.runtime.classpath" refid="maven.compile.classpath" />
                                 <path id="classpath">
-                                    <pathelement path="${maven.runtime.classpath}"/>
+                                    <pathelement path="${maven.runtime.classpath}" />
                                 </path>
-                                <taskdef classname="org.apache.openjpa.ant.PCEnhancerTask" classpathref="classpath" name="openjpac"/>
+                                <taskdef classname="org.apache.openjpa.ant.PCEnhancerTask" classpathref="classpath" name="openjpac" />
                                 <openjpac>
                                     <fileset dir="${basedir}/src/main">
-                                        <include name="**/dao/jpa/openjpa/model/*.java"/>
+                                        <include name="**/dao/jpa/openjpa/model/*.java" />
                                         <!--<include name="**/*.java" />-->
                                     </fileset>
                                     <classpath>
-                                        <pathelement location="${basedir}/target/classes"/>
-                                        <pathelement path="${maven.runtime.classpath}"/>
+                                        <pathelement location="${basedir}/target/classes" />
+                                        <pathelement path="${maven.runtime.classpath}" />
                                     </classpath>
                                 </openjpac>
                             </tasks>
