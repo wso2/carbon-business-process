@@ -111,6 +111,11 @@ public final class HumanTaskConstants {
     public static final String HT_PROTOCOL_SKIPPED = "skipped";
     public static final String HT_PROTOCOL_FAULT = "fault";
 
+    public static final String HT_COORDINATION_KEY = "HumanTaskCoordination";
+    public static final String HT_REGISTRATION_AUTH_KEY = "RegistrationServiceAuthentication";
+    public static final String HT_REGISTRATION_USERNAME_KEY = "Username";
+    public static final String HT_REGISTRATION_PASSWORD_KEY = "Password";
+
     public static final String B4P_REGISTRATIONS_USERNAME_ALIAS = "B4P.RegistrationService.Username";
     public static final String B4P_REGISTRATIONS_PASSWORD_ALIAS = "B4P.RegistrationService.Password";
 

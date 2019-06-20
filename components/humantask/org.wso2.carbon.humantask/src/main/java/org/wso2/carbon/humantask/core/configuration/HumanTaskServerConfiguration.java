@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.humantask.core.configuration;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -28,11 +29,13 @@ import org.wso2.carbon.humantask.server.config.*;
 import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.securevault.SecretResolver;
 import org.wso2.securevault.SecretResolverFactory;
+import org.wso2.securevault.commons.MiscellaneousUtil;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.xml.namespace.QName;
 
 /**
  * The memory model of the humantask configuration - humantask.xml.
@@ -329,7 +332,42 @@ public class HumanTaskServerConfiguration {
         try {
             in = new FileInputStream(file);
             StAXOMBuilder builder = new StAXOMBuilder(in);
-            secretResolver = SecretResolverFactory.create(builder.getDocumentElement(), true);
+            OMElement rootElement = builder.getDocumentElement();
+            secretResolver = SecretResolverFactory.create(rootElement, true);
+            OMElement taskCoordinator = rootElement.getFirstChildWithName(new
+                                                    QName(HumanTaskConstants.HT_COORDINATION_KEY));
+            if (taskCoordinator != null) {
+                OMElement registrationService = taskCoordinator.getFirstChildWithName(new
+                                                    QName(HumanTaskConstants.HT_REGISTRATION_AUTH_KEY));
+                if (registrationService != null) {
+                    OMElement usernameElement = registrationService.getFirstChildWithName(new
+                                                    QName(HumanTaskConstants.HT_REGISTRATION_USERNAME_KEY));
+                    OMElement passwordElement = registrationService.getFirstChildWithName(new
+                                                    QName(HumanTaskConstants.HT_REGISTRATION_PASSWORD_KEY));
+                    // Get Username
+                    if (secretResolver != null && secretResolver.isInitialized() && usernameElement != null) {
+                        this.registrationServiceAuthUsername = MiscellaneousUtil.resolve(usernameElement, secretResolver);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Loaded Registration service admin username from secure vault");
+                        }
+                    } else {
+                        if (authentication.getUsername() != null) {
+                            this.registrationServiceAuthUsername = authentication.getUsername();
+                        }
+                    }
+                    // Get Password
+                    if (secretResolver != null && secretResolver.isInitialized() && passwordElement != null) {
+                        this.registrationServiceAuthPassword = MiscellaneousUtil.resolve(passwordElement, secretResolver);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Loaded  Registration service admin password from secure vault");
+                        }
+                    } else {
+                        if (authentication.getPassword() != null) {
+                            this.registrationServiceAuthPassword = authentication.getPassword();
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             log.warn("Error occurred while retrieving secured TaskEngineProtocolHandler configuration.", e);
         } finally {
@@ -339,30 +377,6 @@ public class HumanTaskServerConfiguration {
                 }
             } catch (IOException e) {
                 log.error(e.getLocalizedMessage(), e);
-            }
-        }
-        // Get Username
-        if (secretResolver != null && secretResolver.isInitialized()
-                && secretResolver.isTokenProtected(HumanTaskConstants.B4P_REGISTRATIONS_USERNAME_ALIAS)) {
-            this.registrationServiceAuthUsername = secretResolver.resolve(HumanTaskConstants.B4P_REGISTRATIONS_USERNAME_ALIAS);
-            if (log.isDebugEnabled()) {
-                log.debug("Loaded Registration service admin username from secure vault");
-            }
-        } else {
-            if (authentication.getUsername() != null) {
-                this.registrationServiceAuthUsername = authentication.getUsername();
-            }
-        }
-        // Get Password
-        if (secretResolver != null && secretResolver.isInitialized()
-                && secretResolver.isTokenProtected(HumanTaskConstants.B4P_REGISTRATIONS_PASSWORD_ALIAS)) {
-            this.registrationServiceAuthPassword = secretResolver.resolve(HumanTaskConstants.B4P_REGISTRATIONS_PASSWORD_ALIAS);
-            if (log.isDebugEnabled()) {
-                log.debug("Loaded  Registration service admin password from secure vault");
-            }
-        } else {
-            if (authentication.getPassword() != null) {
-                this.registrationServiceAuthPassword = authentication.getPassword();
             }
         }
     }
