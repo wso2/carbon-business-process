@@ -113,7 +113,7 @@
                         <_nouse>true</_nouse>
                         <Import-Package>
                             javax.activation;resolution:=optional;version="0.0.0",
-                            org.apache.axiom.*;version="${orbit.version.axiom}",*;resolution:=optional
+                            org.apache.axiom.*;version="${axiom.osgi.version.range}",*;resolution:=optional
                         </Import-Package>
                         <!--<Embed-Dependency>org.wso2.carbon.humantask.stub;scope=compile|runtime;inline=true</Embed-Dependency>-->
                         <!--<Carbon-Component>UIBundle</Carbon-Component>-->
