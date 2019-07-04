@@ -23,8 +23,7 @@ import org.activiti.engine.IdentityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
-import org.apache.cxf.jaxrs.ext.RequestHandler;
-import org.apache.cxf.jaxrs.model.ClassResourceInfo;
+import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
 import org.wso2.carbon.bpmn.core.exception.BPMNAuthenticationException;
 import org.wso2.carbon.bpmn.rest.common.RestErrorResponse;
@@ -37,13 +36,15 @@ import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.user.core.tenant.TenantManager;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class AuthenticationHandler implements RequestHandler {
+public class AuthenticationHandler implements ContainerRequestFilter {
 
     public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
     public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
@@ -55,7 +56,7 @@ public class AuthenticationHandler implements RequestHandler {
 
 
     /**
-     * Implementation of RequestHandler.handleRequest method.
+     * Implementation of ContainerRequestContext.filter method.
      * This method retrieves userName and password from Basic auth header,
      * and tries to authenticate against carbon user store
      * <p/>
@@ -63,21 +64,28 @@ public class AuthenticationHandler implements RequestHandler {
      * Upon invalid credentials returns a HTTP 401 UNAUTHORIZED response to client
      * Upon receiving a userStoreExceptions or IdentityException returns HTTP 500 internal server error to client
      *
-     * @param message
-     * @param classResourceInfo
-     * @return Response
+     * @param containerRequestContext
      */
-    public Response handleRequest(Message message, ClassResourceInfo classResourceInfo) {
+    @Override
+    public void filter(ContainerRequestContext containerRequestContext) {
+        Message message = JAXRSUtils.getCurrentMessage();
         AuthorizationPolicy policy = message.get(AuthorizationPolicy.class);
+
+        Response response = null;
 
         if (policy != null) {
             if (AUTH_TYPE_BASIC.equals(policy.getAuthorizationType())) {
-                return handleBasicAuth(policy);
+                response = handleBasicAuth(policy);
             } else if (AUTH_TYPE_OAuth.equals(policy.getAuthorizationType())) {
-                return handleOAuth(message);
+                response = handleOAuth(message);
             }
+        } else {
+            response = authenticationFail(AUTH_TYPE_BASIC);
         }
-        return authenticationFail(AUTH_TYPE_BASIC);
+
+        if (response != null) {
+            containerRequestContext.abortWith(response);
+        }
     }
 
     protected Response handleBasicAuth(AuthorizationPolicy policy) {
@@ -185,6 +193,4 @@ public class AuthenticationHandler implements RequestHandler {
         return Response.status(restErrorResponse.getStatusCode()).type(MediaType.APPLICATION_JSON).header(WWW_AUTHENTICATE,
                 authType).entity(jsonString).build();
     }
-
-
 }
