@@ -36,6 +36,7 @@ import org.wso2.carbon.bpel.common.config.EndpointConfiguration;
 import org.wso2.carbon.bpel.core.BPELConstants;
 import org.wso2.carbon.bpel.core.internal.BPELServiceComponent;
 import org.wso2.carbon.bpel.core.ode.integration.BPELServerImpl;
+import org.wso2.carbon.bpel.core.ode.integration.config.BPELServerConfiguration;
 import org.wso2.carbon.bpel.core.ode.integration.config.analytics.AnalyticsServerProfile;
 import org.wso2.carbon.bpel.core.ode.integration.config.analytics.AnalyticsServerProfileBuilder;
 import org.wso2.carbon.bpel.core.ode.integration.store.clustering.BPELProcessStateChangedCommand;
@@ -200,6 +201,7 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                         parentProcessStore.getLocalDeploymentUnitRepo().getAbsolutePath(),
                         bpelArchive,
                         versionForThisDeployment);
+
         boolean isExistingPackage = repository.isExistingBPELPackage(deploymentContext);
         boolean isLoadOnly = repository.isBPELPackageReload(deploymentContext);
 
@@ -215,20 +217,61 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
                     " is found as a new deployment"));
         }
 
-        if (isExistingPackage && isLoadOnly) {
-            // This is either a restart of the node or a new package deployment on the non master nodes
-            reloadExistingVersionsOfBPELPackage(deploymentContext);
-            // No need to execute further as we have taken care of retiring the older versions and activating the last
-            // version, hence return
-            return;
+        boolean isConfigRegistryReadOnly = isConfigRegistryReadOnly();
+
+        if (isConfigRegistryReadOnly) {
+            long timeout = BPELServerConfiguration.getInstance().getDeployTimeOut();
+            long startTime = System.currentTimeMillis();
+
+            log.info("Waiting for  " + timeout + " milliseconds until the BPEL process" + bpelArchive.getName() +
+                     " is deployed in the master node : ");
+
+            while ((System.currentTimeMillis() - startTime) <= timeout) {
+                isExistingPackage = repository.isExistingBPELPackage(deploymentContext);
+                isLoadOnly = repository.isBPELPackageReload(deploymentContext);
+
+                deploymentContext.setExistingPackage(isExistingPackage);
+
+                if (deploymentLog.isDebugEnabled()) {
+                    deploymentLog.debug("Package: " + deploymentContext.getBpelPackageName() + (isExistingPackage ?
+                    " is already available" :
+                    "is a new deployment"));
+
+                    deploymentLog.debug("Package: " + deploymentContext.getBpelPackageName() + (isLoadOnly ?
+                    " is already deployed. Therefore the package is reloaded" :
+                    " is found as a new deployment"));
+                }
+
+               if (isExistingPackage && isLoadOnly) {
+                    // This is either a restart of the node or a new package deployment on the non master nodes
+                    reloadExistingVersions(deploymentContext);
+                    log.info("Deployed BPEL process: " + bpelArchive.getName() + " in a slave node ");
+
+                    // No need to execute further as we have taken care of retiring the older versions and
+                    // activating the last version, hence return
+                    return;
+               }
+                //  Thread sleep to delay the deployment of artifacts in the slave node
+                Thread.sleep(2000);
+            }
+
+        } else {
+            if (isExistingPackage && isLoadOnly) {
+                // This is either a restart of the node or a new package deployment on the non master nodes
+                reloadExistingVersions(deploymentContext);
+
+                // No need to execute further as we have taken care of retiring the older versions and activating
+                // the last version, hence return
+                return;
+            }
         }
 
-        if (isConfigRegistryReadOnly()) {
+        if (isConfigRegistryReadOnly) {
             // We do not allow packages to be deployed on slave node first in-order to have correct versioning accross
             // the cluster. Hence a package should be deployed on master node first.
-            log.warn("This node is a slave node as the configuration registry is in read-only mode, " +
+            log.error("This node is a slave node as the configuration registry is in read-only mode, " +
                     "hence processes cannot be directly deployed in this node. " +
-                    "Please deploy the process in Master node first.");
+                    "Please deploy the process," + bpelArchive.getName() + " in Master node first.");
             return;
         }
 
@@ -1041,4 +1084,11 @@ public class TenantProcessStoreImpl implements TenantProcessStore {
         }
         return null;
     }
+
+    public void reloadExistingVersions( BPELDeploymentContext deploymentContext) throws Exception {
+
+        log.info("Deploying BPEL process: " + deploymentContext.getArchiveName());
+        reloadExistingVersionsOfBPELPackage(deploymentContext);
+    }
 }
+

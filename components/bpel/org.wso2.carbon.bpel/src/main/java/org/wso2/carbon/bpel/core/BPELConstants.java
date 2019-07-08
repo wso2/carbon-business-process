@@ -313,4 +313,6 @@ public final class BPELConstants {
             = "ode.secondary.stale.node.detection.threshold.factor";
 
     public static final String BPS_CLUSTER_NODE_MAP = "WSO2_BPS_NODE_ID_MAP";
+
+    public static final String DEPLOY_SYSTEM_PATH = "bps.bpelDeploy.deployTimeout";
 }

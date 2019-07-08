@@ -127,6 +127,8 @@ public class BPELServerConfiguration {
     //Maximum length of a instance variable in instance view.
     private int instanceViewVariableLength = BPELConstants.DEFAULT_INSTANCE_VIEW_VARIABLE_LENGTH;
     private int transactionManagerTimeout = -1;
+    //DeployTimeout Configuration
+    private long deployTimeout = 60000;
 
     public BPELServerConfiguration() {
         if (log.isDebugEnabled()) {
@@ -135,6 +137,12 @@ public class BPELServerConfiguration {
 
         populateDefaultOpenJPAProps();
         loadBPELServerConfigurationFile();
+    }
+
+    private static BPELServerConfiguration BPELServerConfInstance = new BPELServerConfiguration();
+
+    public static BPELServerConfiguration getInstance() {
+        return BPELServerConfInstance;
     }
 
     public static void processACleanup(Set<ProcessConf.CLEANUP_CATEGORY> categories,
@@ -233,6 +241,11 @@ public class BPELServerConfiguration {
 
     public int getMexTimeOut() {
         return mexTimeOut;
+    }
+
+    // Return the deploy timeout in milli seconds defined in the BPS.xml configurations
+    public long getDeployTimeOut() {
+        return deployTimeout;
     }
 
     public int getExternalServiceTimeOut() {
@@ -469,6 +482,7 @@ public class BPELServerConfiguration {
         populateInstanceViewVariableLength();
         populateBpelInstanceDeletionLimit();
         populateTransactionManagerTimeout();
+        populateGetDeploymentTimeout();
     }
 
     /**
@@ -621,6 +635,16 @@ public class BPELServerConfiguration {
         TBPS.MexTimeOut timeOut = bpsConfigDocument.getWSO2BPS().getMexTimeOut();
         if (timeOut != null) {
             this.mexTimeOut = timeOut.getValue();
+        }
+    }
+
+    private void populateGetDeploymentTimeout() {
+        if (System.getProperty(BPELConstants.DEPLOY_SYSTEM_PATH) != null) {
+            this.deployTimeout = Long.parseLong(System.getProperty(BPELConstants.DEPLOY_SYSTEM_PATH)) ;
+        } else {
+            if (bpsConfigDocument.getWSO2BPS().getBpelDeploy() != null ) {
+                this.deployTimeout = bpsConfigDocument.getWSO2BPS().getBpelDeploy().getDeployTimeOut();
+            }
         }
     }
 
