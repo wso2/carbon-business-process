@@ -46,6 +46,7 @@ public class CoordinationConfiguration {
     public static final String HUMAN_TASK_COORDINATION_CONFIG_FILE = "b4p-coordination-config.xml";
     public static final String PROTOCOL_HANDLER_USERNAME_ALIAS = "HumanTask.ProtocolHandler.Username";
     public static final String PROTOCOL_HANDLER_PASSWORD_ALIAS = "HumanTask.ProtocolHandler.Password";
+    public static final String HUMEN_TASK_HANDLER_NAMESPACE = "http://wso2.org/bps/b4p/coordination/config";
     public static final String HUMAN_TASK_HANDLER_AUTHENTICATION = "TaskProtocolHandlerAuthentication";
     public static final String HUMAN_TASK_HANDLER_USERNAME = "Username";
     public static final String HUMEN_TASK_HANDLER_PASSWORD = "Password";
@@ -129,12 +130,12 @@ public class CoordinationConfiguration {
             StAXOMBuilder builder = new StAXOMBuilder(in);
             secretResolver = SecretResolverFactory.create(builder.getDocumentElement(), true);
             OMElement taskHandler = builder.getDocumentElement().
-                    getFirstChildWithName(new QName(HUMAN_TASK_HANDLER_AUTHENTICATION));
+                    getFirstChildWithName(new QName(HUMEN_TASK_HANDLER_NAMESPACE, HUMAN_TASK_HANDLER_AUTHENTICATION));
             if (taskHandler != null) {
                 OMElement taskHandlerUsername = taskHandler.getFirstChildWithName(new
-                                                    QName(HUMAN_TASK_HANDLER_USERNAME));
+                                                    QName(HUMEN_TASK_HANDLER_NAMESPACE, HUMAN_TASK_HANDLER_USERNAME));
                 OMElement taskHandlerPassword = taskHandler.getFirstChildWithName(new
-                                                    QName(HUMEN_TASK_HANDLER_PASSWORD));
+                                                    QName(HUMEN_TASK_HANDLER_NAMESPACE, HUMEN_TASK_HANDLER_PASSWORD));
                 // Get Username
                 if (secretResolver != null && secretResolver.isInitialized() && taskHandlerUsername != null) {
                     protocolHandlerAdminUser = MiscellaneousUtil.resolve(taskHandlerUsername, secretResolver);

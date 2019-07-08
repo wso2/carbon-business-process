@@ -335,15 +335,19 @@ public class HumanTaskServerConfiguration {
             OMElement rootElement = builder.getDocumentElement();
             secretResolver = SecretResolverFactory.create(rootElement, true);
             OMElement taskCoordinator = rootElement.getFirstChildWithName(new
-                                                    QName(HumanTaskConstants.HT_COORDINATION_KEY));
+                                        QName(HumanTaskConstants.HT_REGISTRATION_NAMESPACE,
+                                              HumanTaskConstants.HT_COORDINATION_KEY));
             if (taskCoordinator != null) {
                 OMElement registrationService = taskCoordinator.getFirstChildWithName(new
-                                                    QName(HumanTaskConstants.HT_REGISTRATION_AUTH_KEY));
+                                         QName(HumanTaskConstants.HT_REGISTRATION_NAMESPACE,
+                                               HumanTaskConstants.HT_REGISTRATION_AUTH_KEY));
                 if (registrationService != null) {
                     OMElement usernameElement = registrationService.getFirstChildWithName(new
-                                                    QName(HumanTaskConstants.HT_REGISTRATION_USERNAME_KEY));
+                                         QName(HumanTaskConstants.HT_REGISTRATION_NAMESPACE,
+                                               HumanTaskConstants.HT_REGISTRATION_USERNAME_KEY));
                     OMElement passwordElement = registrationService.getFirstChildWithName(new
-                                                    QName(HumanTaskConstants.HT_REGISTRATION_PASSWORD_KEY));
+                                         QName(HumanTaskConstants.HT_REGISTRATION_NAMESPACE,
+                                               HumanTaskConstants.HT_REGISTRATION_PASSWORD_KEY));
                     // Get Username
                     if (secretResolver != null && secretResolver.isInitialized() && usernameElement != null) {
                         this.registrationServiceAuthUsername = MiscellaneousUtil.resolve(usernameElement, secretResolver);
@@ -501,8 +505,8 @@ public class HumanTaskServerConfiguration {
      */
     public boolean isTaskCleanupEnabled() {
         return StringUtils.isNotEmpty(this.taskCleanupCronExpression) &&
-                CronExpression.isValidExpression(taskCleanupCronExpression) &&
-                removableTaskStatuses.size() > 0;
+               CronExpression.isValidExpression(taskCleanupCronExpression) &&
+               removableTaskStatuses.size() > 0;
     }
 
     public boolean isUiRenderingEnabled() {

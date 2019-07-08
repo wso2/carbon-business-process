@@ -109,10 +109,12 @@ public class BPSAnalyticsConfiguration {
             OMElement rootElement = builder.getDocumentElement();
             secretResolver = SecretResolverFactory.create(rootElement, true);
             OMElement analyticServer = rootElement.getFirstChildWithName(new
-                                        QName(AnalyticsPublisherConstants.BPS_ANALYTIC_SERVER_KEY));
+                                        QName(AnalyticsPublisherConstants.BPS_ANALYTIC_NAMESPACE,
+                                              AnalyticsPublisherConstants.BPS_ANALYTIC_SERVER_KEY));
             if (analyticServer != null) {
                 analyticPassword = analyticServer.getFirstChildWithName(new
-                                    QName(AnalyticsPublisherConstants.BPS_ANALYTIC_PASSWORD_KEY));
+                                    QName(AnalyticsPublisherConstants.BPS_ANALYTIC_NAMESPACE,
+                                          AnalyticsPublisherConstants.BPS_ANALYTIC_PASSWORD_KEY));
             }
         } catch (Exception e) {
             log.warn("Error occurred while retrieving secured BPS Analytics configuration.", e);
