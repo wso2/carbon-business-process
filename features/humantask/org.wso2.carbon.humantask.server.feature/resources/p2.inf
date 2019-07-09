@@ -1,6 +1,6 @@
 instructions.configure = \
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.humantask.server_${feature.version}/conf/humantask.xml,target:${installFolder}/../../conf/humantask.xml,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.humantask.server_${feature.version}/conf/jpadb.h2.db,target:${installFolder}/../../database/jpadb.h2.db,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.humantask.server_${feature.version}/conf/jpadb.mv.db,target:${installFolder}/../../database/jpadb.mv.db,overwrite:true);\
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.humantask.server_${feature.version}/conf/bps-datasources.xml,target:${installFolder}/../../conf/datasources/bps-datasources.xml,overwrite:true);\
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts/bps); \
 org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts/bps/bpel); \

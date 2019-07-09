@@ -84,7 +84,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete file="resources/conf/jpadb.h2.db" />
+                                <delete file="resources/conf/jpadb.mv.db" />
                             </tasks>
                         </configuration>
                     </execution>
@@ -148,7 +148,7 @@
                                     <includes>
                                         <include>**/bps.xml</include>
                                         <incluse>**/b4p-coordination-config.xml</incluse>
-                                        <include>**/jpadb.h2.db</include>
+                                        <include>**/jpadb.mv.db</include>
                                         <include>**/bps-datasources.xml</include>
                                         <include>**/*.sql</include>
                                         <include>p2.inf</include>
