@@ -28,8 +28,8 @@
             <artifactId>org.wso2.carbon.bpmn.extensions</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database.wso2</groupId>
-            <artifactId>h2-database-engine</artifactId>
+            <groupId>org.wso2.orbit.com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -124,7 +124,7 @@
                                     <includes>
                                         <include>conf/datasources/activiti-datasources.xml</include>
                                         <include>conf/activiti.xml</include>
-                                        <include>**/activiti.h2.db</include>
+                                        <include>**/activiti.h2.mv</include>
                                         <include>**/*.sql</include>
                                         <include>p2.inf</include>
                                     </includes>
