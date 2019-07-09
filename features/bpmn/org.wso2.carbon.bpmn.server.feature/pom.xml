@@ -57,7 +57,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete file="resources/conf/activiti.h2.db" />
+                                <delete file="resources/conf/activiti.mv.db" />
                             </tasks>
                         </configuration>
                     </execution>
@@ -124,7 +124,7 @@
                                     <includes>
                                         <include>conf/datasources/activiti-datasources.xml</include>
                                         <include>conf/activiti.xml</include>
-                                        <include>**/activiti.h2.mv</include>
+                                        <include>**/activiti.mv.db</include>
                                         <include>**/*.sql</include>
                                         <include>p2.inf</include>
                                     </includes>
