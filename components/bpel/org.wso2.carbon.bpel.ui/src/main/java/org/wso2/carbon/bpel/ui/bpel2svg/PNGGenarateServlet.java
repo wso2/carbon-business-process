@@ -32,8 +32,6 @@ import org.wso2.carbon.ui.CarbonUIUtil;
 import org.wso2.carbon.utils.ServerConstants;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -131,7 +129,7 @@ public class PNGGenarateServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ServletException ex) {
-            Logger.getLogger(PNGGenarateServlet.class.getName()).log(Level.SEVERE, null, ex);
+            LogFactory.getLog(PNGGenarateServlet.class).error("Unable to process GET request", ex);
         }
     }
 
@@ -149,7 +147,7 @@ public class PNGGenarateServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ServletException ex) {
-            Logger.getLogger(PNGGenarateServlet.class.getName()).log(Level.SEVERE, null, ex);
+            LogFactory.getLog(PNGGenarateServlet.class).error("Unable to process POST request", ex);
         }
     }
 }
