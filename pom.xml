@@ -538,9 +538,9 @@
                 <version>${commons-primitives.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>${version.commons.logging}</version>
+                <groupId>org.ops4j.pax.logging</groupId>
+                <artifactId>pax-logging-api</artifactId>
+                <version>${pax.logging.api.version}</version>
             </dependency>
             <!-- end of common dependencies-->
 
@@ -739,11 +739,6 @@
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.application.deployer</artifactId>
-                <version>${carbon.kernel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.logging</artifactId>
                 <version>${carbon.kernel.version}</version>
             </dependency>
             <dependency>
@@ -1492,8 +1487,10 @@
         <orbit.version.json>3.0.0.wso2v1</orbit.version.json>
 
         <!-- Commons Version -->
-        <version.commons.logging>1.2</version.commons.logging>
         <orbit.version.commons.lang>2.6.0.wso2v1</orbit.version.commons.lang>
+
+        <import.package.version.commons.logging>[1.2.0,2.0.0)</import.package.version.commons.logging>
+        <pax.logging.api.version>1.10.1</pax.logging.api.version>
 
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
 

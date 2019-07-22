@@ -88,8 +88,8 @@
             <artifactId>openjpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.logging</artifactId>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-api</artifactId>
         </dependency>
         <dependency>
             <groupId>net.sf.saxon.wso2</groupId>
@@ -345,6 +345,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-        </plugins> 
+        </plugins>
     </build>
 </project>
