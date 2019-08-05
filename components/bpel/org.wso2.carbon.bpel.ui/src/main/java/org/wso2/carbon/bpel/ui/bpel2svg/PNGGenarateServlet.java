@@ -47,7 +47,7 @@ import javax.xml.namespace.QName;
 public class PNGGenarateServlet extends HttpServlet {
 
     static final long serialVersionUID = 42L;
-
+    private static final Log log = LogFactory.getLog(PNGGenarateServlet.class);
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -59,7 +59,6 @@ public class PNGGenarateServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Log log = LogFactory.getLog(PNGGenarateServlet.class);
         HttpSession session = request.getSession(true);
         String pid = CharacterEncoder.getSafeText(request.getParameter("pid"));
         ServletConfig config = getServletConfig();
@@ -129,7 +128,8 @@ public class PNGGenarateServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ServletException ex) {
-            LogFactory.getLog(PNGGenarateServlet.class).error("Unable to process GET request", ex);
+
+            log.error("Unable to process GET request", ex);
         }
     }
 
@@ -147,7 +147,7 @@ public class PNGGenarateServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ServletException ex) {
-            LogFactory.getLog(PNGGenarateServlet.class).error("Unable to process POST request", ex);
+            log.error("Unable to process POST request", ex);
         }
     }
 }
