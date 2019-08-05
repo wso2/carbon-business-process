@@ -57,10 +57,6 @@
                 <artifactId>org.wso2.carbon.core</artifactId>
             </dependency>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.openjpa</groupId>
                 <artifactId>openjpa</artifactId>
                 <!-- We don't need an orbit bundle, since this is a bundle -->

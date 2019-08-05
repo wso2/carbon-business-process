@@ -18,7 +18,6 @@ package org.wso2.carbon.humantask.core.scheduler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.wso2.carbon.humantask.core.api.scheduler.InvalidJobsInDbException;
 import org.wso2.carbon.humantask.core.api.scheduler.InvalidUpdateRequestException;
 import org.wso2.carbon.humantask.core.api.scheduler.Scheduler;
@@ -30,6 +29,7 @@ import org.wso2.carbon.humantask.core.internal.HumanTaskServiceComponent;
 import javax.persistence.EntityManager;
 import javax.transaction.TransactionManager;
 import java.lang.reflect.ParameterizedType;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -358,7 +358,6 @@ public class SimpleScheduler implements Scheduler, TaskRunner {
             long delayedTime = System.currentTimeMillis() - warningDelay;
             int delayedCount = 0;
             boolean runningLate;
-            AbsoluteTimeDateFormat f = new AbsoluteTimeDateFormat();
             for (Job j : jobs) {
                 // jobs might have been enqueued by #addTodoList meanwhile
                 if (outstandingJobs.size() >= todoLimit) {
@@ -375,7 +374,8 @@ public class SimpleScheduler implements Scheduler, TaskRunner {
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("todo.enqueue job from db: " + j.getJobID() + " for " + j.schedDate +
-                            "(" + f.format(j.schedDate) + ") " + (runningLate ? " delayed=true" : ""));
+                            "(" + new SimpleDateFormat("HH:mm:ss,SSS").format(j.schedDate) + ") " +
+                              (runningLate ? " delayed=true" : ""));
                 }
                 enqueue(j);
             }

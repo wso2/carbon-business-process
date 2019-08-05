@@ -48,7 +48,7 @@ import javax.xml.namespace.QName;
 public class SVGGenerateServlet extends HttpServlet {
 
     static final long serialVersionUID = 42L;
-
+    private static final Log log = LogFactory.getLog(SVGGenerateServlet.class);
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * Handles the HTTP process request which creates the SVG graph for a bpel process
@@ -61,7 +61,6 @@ public class SVGGenerateServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Log log = LogFactory.getLog(SVGGenerateServlet.class);
         HttpSession session = request.getSession(true);
         //Get the bpel process id
         String pid = CharacterEncoder.getSafeText(request.getParameter("pid"));
@@ -143,7 +142,7 @@ public class SVGGenerateServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ServletException ex) {
-            LogFactory.getLog(PNGGenarateServlet.class).error("Could not process the request", ex);
+            log.error("Could not process the request", ex);
         }
     }
 
@@ -161,7 +160,7 @@ public class SVGGenerateServlet extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ServletException ex) {
-            LogFactory.getLog(PNGGenarateServlet.class).error("Could no process the request", ex);
+            log.error("Could no process the request", ex);
         }
     }
 }
