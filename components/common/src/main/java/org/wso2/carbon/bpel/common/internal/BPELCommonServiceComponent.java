@@ -37,8 +37,6 @@ public class BPELCommonServiceComponent {
 
     private BundleContext bundleContext;
 
-    private ServiceRegistration registration;
-
     @Activate
     protected void activate(ComponentContext ctxt) {
 
@@ -85,6 +83,5 @@ public class BPELCommonServiceComponent {
         if (log.isDebugEnabled()) {
             log.debug("Stopping the BPEL common Component");
         }
-        componentContext.getBundleContext().ungetService(registration.getReference());
     }
 }
