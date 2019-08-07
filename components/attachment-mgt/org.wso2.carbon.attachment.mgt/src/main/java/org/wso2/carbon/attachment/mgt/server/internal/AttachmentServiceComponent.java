@@ -127,9 +127,9 @@ public class AttachmentServiceComponent {
     @Deactivate
     protected void deactivate(ComponentContext componentContext) {
 
-        log.info("org.wso2.carbon.attachment.mgt.server.internal.AttachmentServiceComponent.deactivate");
-        throw new UnsupportedOperationException("org.wso2.carbon.attachment.mgt.server.internal" +
-                ".AttachmentServiceComponent.deactivate");
+        if (log.isDebugEnabled()) {
+            log.debug("org.wso2.carbon.attachment.mgt.server.internal.AttachmentServiceComponent.deactivate");
+        }
     }
 
     /**
