@@ -192,7 +192,7 @@
 
                             <importFeatures>
                                 <importFeatureDef>
-                                    org.wso2.carbon.core.server:compatible:${carbon.kernel.version}
+                                    org.wso2.carbon.core.server:compatible:${carbon.kernel.feature.version}
                                 </importFeatureDef>
                             </importFeatures>
                         </configuration>
