@@ -102,7 +102,11 @@ public class SOAPTask implements JavaDelegate {
     private static final String REST_INVOKE_ERROR = "REST_CLIENT_INVOKE_ERROR";
     private static final String SOAP12_VERSION = "soap12";
     private static final String SOAP11_VERSION = "soap11";
+    private static final String BAD_REQUEST = "BAD_REQUEST";
+    private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
     private static final String SOAP_INVOKE_ERROR_CODE = "SOAP_CLIENT_INVOKE_ERROR";
+    private static final String SOAP_TASK_ERROR_CODE = "SOAP_TASK_ERROR_CODE";
+    private static final String SOAP_INVOKE_ERROR_MESSAGE = "SOAP_INVOKE_ERROR_MESSAGE";
 
 
 
@@ -116,6 +120,8 @@ public class SOAPTask implements JavaDelegate {
     private Expression outputVariable;
     private Expression transportHeaders;
     private Expression soapAction;
+    private Expression errorCodeVariable;
+    private Expression errorMessageVariable;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -150,7 +156,8 @@ public class SOAPTask implements JavaDelegate {
                 } else {
                     String msg = "Registry type is not specified for service reference in " +
                             " serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
-                    throw new SOAPException(SOAP_INVOKE_ERROR_CODE , msg);
+                    setErrorDetailsForTaskExecution(execution, BAD_REQUEST, msg);
+                    throw new SOAPException(BAD_REQUEST , msg);
                 }
 
                 if (log.isDebugEnabled()) {
@@ -170,17 +177,20 @@ public class SOAPTask implements JavaDelegate {
                     String errorMsg = "Endpoint resource " + registryPath +
                             " is not found. Failed to execute REST invocation in task " +
                             execution.getCurrentActivityName();
-                    throw new SOAPException(SOAP_INVOKE_ERROR_CODE, errorMsg);
+                    setErrorDetailsForTaskExecution(execution, BAD_REQUEST, errorMsg);
+                    throw new SOAPException(BAD_REQUEST, errorMsg);
                 }
             } else {
                 String urlNotFoundErrorMsg = "Service URL is not provided. serviceURL must be provided.";
-                throw new SOAPException(SOAP_INVOKE_ERROR_CODE, urlNotFoundErrorMsg);
+                setErrorDetailsForTaskExecution(execution, BAD_REQUEST, urlNotFoundErrorMsg);
+                throw new SOAPException(BAD_REQUEST, urlNotFoundErrorMsg);
             }
             if (payload != null) {
                 payloadRequest = payload.getValue(execution).toString();
             } else {
                 String payloadNotFoundErrorMsg = "Payload request is not provided. Payload must be provided.";
-                throw new SOAPException(SOAP_INVOKE_ERROR_CODE, payloadNotFoundErrorMsg);
+                setErrorDetailsForTaskExecution(execution, BAD_REQUEST, payloadNotFoundErrorMsg);
+                throw new SOAPException(BAD_REQUEST, payloadNotFoundErrorMsg);
             }
             if (soapVersion != null) {
                 version = soapVersion.getValue(execution).toString();
@@ -190,7 +200,8 @@ public class SOAPTask implements JavaDelegate {
                     soapVersionURI = SOAP11Constants.SOAP_ENVELOPE_NAMESPACE_URI;
                 } else {
                     String invalidVersionErrorMsg = "Invalid soap version string specified";
-                    throw new SOAPException(SOAP_INVOKE_ERROR_CODE, invalidVersionErrorMsg);
+                    setErrorDetailsForTaskExecution(execution, BAD_REQUEST, invalidVersionErrorMsg);
+                    throw new SOAPException(BAD_REQUEST, invalidVersionErrorMsg);
                 }
             }
             //Adding the connection
@@ -290,15 +301,34 @@ public class SOAPTask implements JavaDelegate {
                 String outputNotFoundErrorMsg = "Output variable is not provided. " +
                         "outputVariable must be provided to save " +
                         "the response.";
-                throw new SOAPException(SOAP_INVOKE_ERROR_CODE, outputNotFoundErrorMsg);
+                setErrorDetailsForTaskExecution(execution, BAD_REQUEST, outputNotFoundErrorMsg);
+                throw new SOAPException(BAD_REQUEST, outputNotFoundErrorMsg);
             }
         } catch (AxisFault axisFault) {
             log.error("Axis2 Fault", axisFault);
+            String errMsg = "Exception while getting response :" + axisFault.getMessage();
+            setErrorDetailsForTaskExecution(execution, SOAP_INVOKE_ERROR_CODE, errMsg);
             throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "Exception while getting response :" +
                     axisFault.getMessage());
         } catch (XMLStreamException | RegistryException e) {
             log.error("Exception in processing", e);
-            throw new SOAPException(SOAP_INVOKE_ERROR_CODE, "Exception in processing  :" + e.getMessage());
+            String errMsg = "Exception in processing  :" + e.getMessage();
+            setErrorDetailsForTaskExecution(execution, INTERNAL_SERVER_ERROR, errMsg);
+            throw new SOAPException(INTERNAL_SERVER_ERROR, errMsg);
+        }
+    }
+
+    private void setErrorDetailsForTaskExecution(DelegateExecution execution, String errorCode, String errorMessage) {
+
+        if (errorCodeVariable != null) {
+            execution.setVariable(errorCodeVariable.getValue(execution).toString(), errorCode);
+        } else {
+            execution.setVariable(SOAP_TASK_ERROR_CODE, errorCode);
+        }
+        if (errorMessageVariable != null) {
+            execution.setVariable(errorMessageVariable.getValue(execution).toString(), errorMessage);
+        } else {
+            execution.setVariable(SOAP_INVOKE_ERROR_MESSAGE, errorMessage);
         }
     }
 
@@ -340,5 +370,13 @@ public class SOAPTask implements JavaDelegate {
 
     public void setTransportHeaders(Expression transportHeaders) {
         this.transportHeaders = transportHeaders;
+    }
+
+    public void setErrorMessageVariable(Expression errorMessageVariable) {
+        this.errorMessageVariable = errorMessageVariable;
+    }
+
+    public void setErrorCodeVariable(Expression errorCodeVariable) {
+        this.errorCodeVariable = errorCodeVariable;
     }
 }
