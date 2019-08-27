@@ -1423,7 +1423,7 @@
 
         <orbit.version.axis2>${axis2.version}</orbit.version.axis2>
         <!--axis2.wso2.version.aar.plugin>1.6.2</axis2.wso2.version.aar.plugin-->
-        <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
+        <carbon.p2.plugin.version>5.1.2</carbon.p2.plugin.version>
 
         <!-- Carbon kernel version -->
         <carbon.kernel.version>4.5.0-m3</carbon.kernel.version>
