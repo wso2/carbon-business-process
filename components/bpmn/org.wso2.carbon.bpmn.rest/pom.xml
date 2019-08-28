@@ -172,6 +172,10 @@
                     <groupId>org.apache.ws.commons.schema.wso2</groupId>
                     <artifactId>XmlSchema</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
