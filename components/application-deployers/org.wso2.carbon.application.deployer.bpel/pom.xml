@@ -63,6 +63,7 @@
                         <Import-Package>
                             org.wso2.carbon.application.deployer.*,
                             org.apache.commons.logging.*; version="${import.package.version.commons.logging}",
+                            org.osgi.service.component.*;version="${imp.package.version.osgi.services}",
                             *;resolution:=optional
                         </Import-Package>
                         <WSO2-Application-Deployer>BPEL App Deployer</WSO2-Application-Deployer>

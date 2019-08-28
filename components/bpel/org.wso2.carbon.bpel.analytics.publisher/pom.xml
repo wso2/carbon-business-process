@@ -80,6 +80,7 @@
                             org.wso2.carbon.agent.publish.*,
                             org.wso2.carbon.analytics.service.*,
                             org.apache.ode.*,
+                            org.osgi.service.component.*;version="${imp.package.version.osgi.services}",
                             *;resolution:=optional
                         </Import-Package>
                     </instructions>

@@ -223,7 +223,8 @@
                             !net.sf.cglib.asm.*;version="${cglib.version}",
                             !org.apache.geronimo.crypto.*,
                             !org.apache.xbean.osgi.bundle.util.*;version="${xbean.bundleutils.version}",
-                            !org.apache.xbean.recipe.*;version="${xbean.reflect.version}"
+                            !org.apache.xbean.recipe.*;version="${xbean.reflect.version}",
+                            org.osgi.service.component.*;version="${imp.package.version.osgi.services}",
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>

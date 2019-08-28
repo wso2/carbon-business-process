@@ -1500,6 +1500,7 @@
 
         <!-- Equinox dependency versions -->
         <version.equinox.osgi>3.8.1.v20120830-144521</version.equinox.osgi>
+        <imp.package.version.osgi.services>[1.2.0,2.0.0)</imp.package.version.osgi.services>
 
         <!-- JSTL -->
         <orbit.version.jstl>1.2.1.wso2v2</orbit.version.jstl>
