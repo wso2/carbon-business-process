@@ -326,6 +326,7 @@
 
                         <Import-Package>org.osgi.framework,
                             javax.activation; version=0.0.0,
+                            org.osgi.service.component.*;version="${imp.package.version.osgi.services}",
                             *;resolution:=optional
                         </Import-Package>
                         <!--<Bundle-Activator>org.wso2.carbon.attachment.mgt.server.internal.AttachmentServiceComponent</Bundle-Activator>-->

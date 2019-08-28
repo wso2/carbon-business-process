@@ -136,6 +136,7 @@
                             !org.wso2.carbon.bpel.deployer,
                             org.wso2.carbon.ndatasource.*,
                             com.jayway.jsonpath.*;version="1.2.0",
+                            org.osgi.service.component.*;version="${imp.package.version.osgi.services}",
                             *;resolution:=optional
                         </Import-Package>
                         <!--<Import-Package>-->
