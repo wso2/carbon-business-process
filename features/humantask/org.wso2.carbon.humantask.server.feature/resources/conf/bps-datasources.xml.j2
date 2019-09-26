@@ -1,0 +1,27 @@
+<datasources-configuration xmlns:svns="http://org.wso2.securevault/configuration">
+
+<providers>
+        <provider>org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceReader</provider>
+    </providers>
+
+<datasources>
+        <datasource>
+            <name>BPS_DS</name>
+            <description></description>
+            <jndiConfig>
+                <name>bpsds</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>{{bps_database.config.url}}</url>
+                    <username>{{bps_database.config.username}}</username>
+                    <password>{{bps_database.config.password}}</password>
+                    <driverClassName>{{bps_database.config.driver}}</driverClassName>
+                    {% for property_name,property_value in bps_database.config.pool_options.items() %}
+                    <{{property_name}}>{{property_value}}</{{property_name}}>
+                    {% endfor %}
+                </configuration>
+            </definition>
+        </datasource>
+    </datasources>
+</datasources-configuration>

@@ -1,0 +1,6 @@
+{
+  "bps_database.config.url" : "jdbc:h2:file:./repository/database/jpadb;DB_CLOSE_ON_EXIT=FALSE;MVCC=TRUE",
+  "bps_database.config.username" : "wso2carbon",
+  "bps_database.config.password" : "wso2carbon",
+  "bps_database.config.driver" : "org.h2.Driver"
+}

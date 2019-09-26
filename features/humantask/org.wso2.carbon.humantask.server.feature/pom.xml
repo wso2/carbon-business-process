@@ -144,6 +144,8 @@
                                         <include>**/*.sql</include>
                                         <include>p2.inf</include>
                                         <include>build.properties</include>
+                                        <include>**/bps-datasources.xml.j2</include>
+                                        <include>**/org.wso2.carbon.humantask.server.feature.default.json</include>
                                     </includes>
                                 </resource>
                             </resources>
