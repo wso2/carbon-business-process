@@ -1639,7 +1639,7 @@
 
         <!-- Activiti Version -->
 
-        <org.activiti.wso2.version>5.21.0.wso2v1</org.activiti.wso2.version>
+        <org.activiti.wso2.version>5.23.0.wso2v1</org.activiti.wso2.version>
         <!--<restlet.version>2.2.1.wso2v1</restlet.version>-->
         <commons.lang3.version>3.3.2</commons.lang3.version>
         <project.scm.id>scm-server</project.scm.id>
