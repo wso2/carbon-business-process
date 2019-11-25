@@ -21,6 +21,7 @@ package org.wso2.carbon.bpmn.core.types.datatypes.json.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpmn.core.types.datatypes.json.BPMNJsonException;
@@ -63,7 +64,12 @@ public class JsonNodeObject {
 
         ObjectMapper mapper = new ObjectMapper();
         Map map = mapper.convertValue(jsonNode, Map.class);
-        Object result = JsonPath.read(map, jsonPathStr);
+        Object result;
+        try {
+            result = JsonPath.read(map, jsonPathStr);
+        } catch (PathNotFoundException e) {
+            throw new BPMNJsonException("Error occurred while reading json path.", e);
+        }
 
         JsonBuilder builder = new JsonBuilder(mapper);
         if (result instanceof Map) {

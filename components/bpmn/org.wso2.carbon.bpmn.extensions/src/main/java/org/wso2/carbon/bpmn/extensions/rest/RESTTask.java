@@ -21,6 +21,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
@@ -147,6 +148,7 @@ public class RESTTask implements JavaDelegate {
     private Expression responseHeaderVariable;
     private Expression httpStatusVariable;
     private Expression errorMessageVariable;
+    private Expression enableDefaultVariable;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -281,6 +283,11 @@ public class RESTTask implements JavaDelegate {
                 output = StringEscapeUtils.escapeXml(String.valueOf(output));
             }
 
+            boolean isDefaultVarAvailable = false;
+            if (enableDefaultVariable != null) {
+                isDefaultVarAvailable = Boolean.valueOf(enableDefaultVariable.getValue(execution).toString());
+            }
+
             if (outputVariable != null) {
                 String outVarName = outputVariable.getValue(execution).toString();
                 execution.setVariable(outVarName, output);
@@ -292,11 +299,37 @@ public class RESTTask implements JavaDelegate {
                     String[] mappingParts = mapping.split(":");
                     String varName = mappingParts[0];
                     String expression = mappingParts[1];
+                    String defaultVariableStr = null;
+                    if (mappingParts.length == 3) {
+                        defaultVariableStr = mappingParts[2];
+                    }
                     Object value;
                     if (output instanceof JsonNodeObject) {
-                        value = ((JsonNodeObject) output).jsonPath(expression);
+                        try {
+                            value = ((JsonNodeObject) output).jsonPath(expression);
+                        } catch (BPMNJsonException e) {
+                            if (isDefaultVarAvailable) {
+                                value = null;
+                                if (StringUtils.isNotBlank(defaultVariableStr)) {
+                                    value = execution.getVariable(defaultVariableStr);
+                                }
+                            } else {
+                                throw e;
+                            }
+                        }
                     } else if (output instanceof XMLDocument) {
-                        value = ((XMLDocument) output).xPath(expression);
+                        try {
+                            value = ((XMLDocument) output).xPath(expression);
+                        } catch (BPMNXmlException e) {
+                            if (isDefaultVarAvailable) {
+                                value = null;
+                                if (StringUtils.isNotBlank(defaultVariableStr)) {
+                                    value = execution.getVariable(defaultVariableStr);
+                                }
+                            } else {
+                                throw e;
+                            }
+                        }
                     } else {
                         String errorMessage = "Unrecognized content type found. " + "HTTP Status : " + response
                                 .getHttpStatus() + ", Response Content : " + output.toString();
@@ -425,4 +458,7 @@ public class RESTTask implements JavaDelegate {
         this.errorMessageVariable = errorMessageVariable;
     }
 
+    public void setEnableDefaultVariable(Expression enableDefaultVariable) {
+        this.enableDefaultVariable = enableDefaultVariable;
+    }
 }
