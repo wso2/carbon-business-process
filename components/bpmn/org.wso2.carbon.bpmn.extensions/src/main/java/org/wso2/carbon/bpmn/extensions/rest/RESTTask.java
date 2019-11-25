@@ -148,7 +148,7 @@ public class RESTTask implements JavaDelegate {
     private Expression responseHeaderVariable;
     private Expression httpStatusVariable;
     private Expression errorMessageVariable;
-    private Expression defaultVariableSetFlag;
+    private Expression enableDefaultVariable;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -284,8 +284,8 @@ public class RESTTask implements JavaDelegate {
             }
 
             boolean isDefaultVarAvailable = false;
-            if (defaultVariableSetFlag != null) {
-                isDefaultVarAvailable = Boolean.valueOf(defaultVariableSetFlag.getValue(execution).toString());
+            if (enableDefaultVariable != null) {
+                isDefaultVarAvailable = Boolean.valueOf(enableDefaultVariable.getValue(execution).toString());
             }
 
             if (outputVariable != null) {
@@ -458,7 +458,7 @@ public class RESTTask implements JavaDelegate {
         this.errorMessageVariable = errorMessageVariable;
     }
 
-    public void setDefaultVariableSetFlag(Expression defaultVariableSetFlag) {
-        this.defaultVariableSetFlag = defaultVariableSetFlag;
+    public void setEnableDefaultVariable(Expression enableDefaultVariable) {
+        this.enableDefaultVariable = enableDefaultVariable;
     }
 }
