@@ -127,12 +127,18 @@ public class RESTTask implements JavaDelegate {
     private static final String GOVERNANCE_REGISTRY_PREFIX = "gov:/";
     private static final String CONFIGURATION_REGISTRY_PREFIX = "conf:/";
     private static final String REST_INVOKE_ERROR = "REST_CLIENT_INVOKE_ERROR";
+    private static final String UNRECOGNIZED_CONTENT_TYPE = "UNRECOGNIZED_CONTENT_TYPE";
+    private static final String INVALID_RESPONSE_CONTENT = "INVALID_RESPONSE_CONTENT";
+    private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+    private static final String BAD_REQUEST = "BAD_REQUEST";
+    private static final String METHOD_NOT_ALLOWED = "METHOD_NOT_ALLOWED";
     private static final String GET_METHOD = "GET";
     private static final String POST_METHOD = "POST";
     private static final String PUT_METHOD = "PUT";
     private static final String DELETE_METHOD = "DELETE";
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_XML = "application/xml";
+    private static final String HTTP_ERROR_CODE = "HTTP_ERROR_CODE";
     private static final String REST_INVOKE_ERROR_CODE = "REST_INVOKE_ERROR_CODE";
     private static final String REST_INVOKE_ERROR_MESSAGE = "REST_INVOKE_ERROR_MESSAGE";
 
@@ -147,6 +153,7 @@ public class RESTTask implements JavaDelegate {
     private Expression headers;
     private Expression responseHeaderVariable;
     private Expression httpStatusVariable;
+    private Expression errorCodeVariable;
     private Expression errorMessageVariable;
     private Expression enableDefaultVariable;
 
@@ -155,7 +162,7 @@ public class RESTTask implements JavaDelegate {
 
         if (method == null) {
             String error = "HTTP method for the REST task not found. Please specify the \"method\" form property.";
-            throw new RESTClientException(error);
+            throw new RESTClientException(BAD_REQUEST, error);
         }
 
         if (log.isDebugEnabled()) {
@@ -213,7 +220,7 @@ public class RESTTask implements JavaDelegate {
                         String msg =
                                 "Registry type is not specified for service reference in " + getTaskDetails(execution)
                                         + ". serviceRef should begin with gov:/ or conf:/ to indicate the registry type.";
-                        throw new RESTClientException(msg);
+                        throw new RESTClientException(BAD_REQUEST, msg);
                     }
 
                     if (log.isDebugEnabled()) {
@@ -242,7 +249,7 @@ public class RESTTask implements JavaDelegate {
             } else {
                 String urlNotFoundErrorMsg = "Service URL is not provided for " +
                         getTaskDetails(execution) + ". serviceURL or serviceRef must be provided.";
-                throw new RESTClientException(urlNotFoundErrorMsg);
+                throw new RESTClientException(BAD_REQUEST, urlNotFoundErrorMsg);
             }
 
             if (headers != null) {
@@ -262,7 +269,7 @@ public class RESTTask implements JavaDelegate {
                 response = restInvoker.invokeDELETE(new URI(url), jsonHeaders, bUsername, bPassword);
             } else {
                 String errorMsg = "Unsupported http method. The REST task only supports GET, POST, PUT and DELETE operations";
-                throw new RESTClientException(errorMsg);
+                throw new RESTClientException(METHOD_NOT_ALLOWED, errorMsg);
             }
 
             Object output = response.getContent();
@@ -333,8 +340,8 @@ public class RESTTask implements JavaDelegate {
                     } else {
                         String errorMessage = "Unrecognized content type found. " + "HTTP Status : " + response
                                 .getHttpStatus() + ", Response Content : " + output.toString();
-                        setErrorDetailsForTaskExecution(execution, errorMessage, response);
-                        throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
+                        setErrorDetailsForTaskExecution(execution, UNRECOGNIZED_CONTENT_TYPE, errorMessage, response);
+                        throw new RESTClientException(UNRECOGNIZED_CONTENT_TYPE, errorMessage);
                     }
                     execution.setVariable(varName, value);
                 }
@@ -342,7 +349,7 @@ public class RESTTask implements JavaDelegate {
                 String outputNotFoundErrorMsg = "An outputVariable or outputMappings is not provided. " +
                         "Either an output variable or output mappings  must be provided to save " +
                         "the response.";
-                throw new RESTClientException(outputNotFoundErrorMsg);
+                throw new RESTClientException(BAD_REQUEST, outputNotFoundErrorMsg);
             }
 
             if (responseHeaderVariable != null) {
@@ -369,21 +376,21 @@ public class RESTTask implements JavaDelegate {
                 | SAXException | ParserConfigurationException e) {
             String errorMessage = "Failed to execute " + method.getValue(execution).toString() +
                     " " + url + " within task " + getTaskDetails(execution);
-            setErrorDetailsForTaskExecution(execution, errorMessage, response);
+            setErrorDetailsForTaskExecution(execution, REST_INVOKE_ERROR, errorMessage, response);
             log.error(errorMessage, e);
             throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
         } catch (BPMNJsonException | BPMNXmlException e) {
             String errorMessage = "Failed to extract values for output mappings, the response content" +
                     " doesn't support the expression" + method.getValue(execution).toString() + " " +
                     url + " within task " + getTaskDetails(execution);
-            setErrorDetailsForTaskExecution(execution, errorMessage, response);
+            setErrorDetailsForTaskExecution(execution, INVALID_RESPONSE_CONTENT, errorMessage, response);
             log.error(errorMessage, e);
-            throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
+            throw new RESTClientException(INVALID_RESPONSE_CONTENT, errorMessage);
         } catch (UserStoreException e) {
             String errorMessage = "Failed to obtain tenant domain information" ;
-            setErrorDetailsForTaskExecution(execution, errorMessage, response);
+            setErrorDetailsForTaskExecution(execution, INTERNAL_SERVER_ERROR, errorMessage, response);
             log.error(errorMessage, e);
-            throw new RESTClientException(REST_INVOKE_ERROR, errorMessage);
+            throw new RESTClientException(INTERNAL_SERVER_ERROR, errorMessage);
         }
     }
 
@@ -392,12 +399,17 @@ public class RESTTask implements JavaDelegate {
         return task;
     }
 
-    private void setErrorDetailsForTaskExecution(DelegateExecution execution, String errorMessage,
+    private void setErrorDetailsForTaskExecution(DelegateExecution execution, String errorCode, String errorMessage,
             RESTResponse response) {
         if (httpStatusVariable != null && response != null) {
             execution.setVariable(httpStatusVariable.getValue(execution).toString(), response.getHttpStatus());
         } else if (response != null) {
-            execution.setVariable(REST_INVOKE_ERROR_CODE, response.getHttpStatus());
+            execution.setVariable(HTTP_ERROR_CODE, response.getHttpStatus());
+        }
+        if (errorCodeVariable != null) {
+            execution.setVariable(errorCodeVariable.getValue(execution).toString(), errorCode);
+        } else {
+            execution.setVariable(REST_INVOKE_ERROR_CODE, errorCode);
         }
         if (errorMessageVariable != null) {
             execution.setVariable(errorMessageVariable.getValue(execution).toString(), errorMessage);
@@ -460,5 +472,9 @@ public class RESTTask implements JavaDelegate {
 
     public void setEnableDefaultVariable(Expression enableDefaultVariable) {
         this.enableDefaultVariable = enableDefaultVariable;
+    }
+
+    public void setErrorCodeVariable(Expression errorCodeVariable) {
+        this.errorCodeVariable = errorCodeVariable;
     }
 }
