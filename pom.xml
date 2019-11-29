@@ -1426,7 +1426,7 @@
         <carbon.kernel.imp.pkg.version>[4.5.2, 4.6.0)</carbon.kernel.imp.pkg.version>
 
         <!-- Carbon commons version -->
-        <carbon.commons.version>4.7.18</carbon.commons.version>
+        <carbon.commons.version>4.7.19</carbon.commons.version>
         <carbon.commons.imp.pkg.version>[4.7.0, 5.0.0)</carbon.commons.imp.pkg.version>
 
         <!-- Carbon identity version -->
@@ -1434,19 +1434,19 @@
         <carbon.identity.imp.pkg.version>[5.13.0, 6.0.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
-        <carbon.deployment.version>4.9.14</carbon.deployment.version>
+        <carbon.deployment.version>4.9.15</carbon.deployment.version>
         <carbon.deployment.imp.pkg.version>[4.9.0, 5.0.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
-        <carbon.registry.version>4.7.20</carbon.registry.version>
+        <carbon.registry.version>4.7.24</carbon.registry.version>
         <carbon.registry.imp.pkg.version>[4.7.0,5.0.0)</carbon.registry.imp.pkg.version>
 
         <!-- Carbon Multi-tenancy version-->
-        <carbon.multitenancy.version>4.7.14</carbon.multitenancy.version>
+        <carbon.multitenancy.version>4.7.15</carbon.multitenancy.version>
         <carbon.multitenancy.imp.pkg.version>[4.7.0, 5.0.0)</carbon.multitenancy.imp.pkg.version>
 
         <!-- Carbon Event-processing version-->
-        <carbon.analytics.common.version>5.2.17</carbon.analytics.common.version>
+        <carbon.analytics.common.version>5.2.18</carbon.analytics.common.version>
         <carbon.analytics.common.imp.pkg.version>[5.2.0, 6.0.0)</carbon.analytics.common.imp.pkg.version>
 
         <!-- Axiom Version -->
