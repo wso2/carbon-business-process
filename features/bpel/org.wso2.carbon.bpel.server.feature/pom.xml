@@ -247,9 +247,6 @@
                                     org.wso2.carbon.core.server:compatible:${carbon.kernel.feature.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.service.mgt.server:compatible:${carbon.deployment.version}
-                                </importFeatureDef>
-                                <importFeatureDef>
                                     org.wso2.carbon.unifiedendpoint.server:compatible:${carbon.business-process.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
