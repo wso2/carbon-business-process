@@ -21,6 +21,10 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.TransportInDescription;
+import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,12 +93,15 @@ import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.ServiceL
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Service_type0;
 import org.wso2.carbon.bpel.skeleton.ode.integration.mgt.services.types.Service_type1;
 import org.wso2.carbon.core.AbstractAdmin;
-import org.wso2.carbon.service.mgt.util.Utils;
+import org.wso2.carbon.core.transports.http.HttpTransportListener;
+import org.wso2.carbon.utils.CarbonUtils;
+import org.wso2.carbon.utils.NetworkUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.SocketException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,6 +123,9 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class ProcessManagementServiceSkeleton extends AbstractAdmin
         implements ProcessManagementServiceSkeletonInterface {
+
+    private static boolean isServletTransport = false;
+    private static boolean isServletTransportSet = false;
     private static Log log = LogFactory.getLog(ProcessManagementServiceSkeleton.class);
     private BPELServerImpl bpelServer = BPELServerImpl.getInstance();
     private BpelDatabase bpelDb = bpelServer.getODEBPELServer().getBpelDb();
@@ -505,9 +515,9 @@ public class ProcessManagementServiceSkeleton extends AbstractAdmin
                 eprType.setService(serviceName);
                 ServiceLocation sLocation = new ServiceLocation();
                 try {
-                    String url = Utils.getTryitURL(serviceName.getLocalPart(), getConfigContext());
+                    String url = getTryitURL(serviceName.getLocalPart(), getConfigContext());
                     sLocation.addServiceLocation(url);
-                    String[] wsdls = Utils.getWsdlInformation(serviceName.getLocalPart(),
+                    String[] wsdls = getWsdlInformation(serviceName.getLocalPart(),
                             getConfigContext().getAxisConfiguration());
                     if (wsdls.length == 2) {
                         if (wsdls[0].endsWith("?wsdl")) {
@@ -917,5 +927,85 @@ public class ProcessManagementServiceSkeleton extends AbstractAdmin
         String errMsg = "Process Definition for: " + pConf.getProcessId() + " not found";
         log.error(errMsg);
         throw new ProcessManagementException(errMsg);
+    }
+
+    private static String getTryitURL(String serviceName,
+                                     ConfigurationContext configurationContext)
+            throws AxisFault {
+        AxisConfiguration axisConfig = configurationContext.getAxisConfiguration();
+        // If axis2 uses the servlet transport then we could use the prefix of its endpoint URL to
+        // determine the tryit url
+        String wsdlURL = getWsdlInformation(serviceName, axisConfig)[0];
+        String tryitPrefix = wsdlURL.substring(0, wsdlURL.length() - serviceName.length() - 5);
+        if (!isServletTransport(axisConfig)) {
+            int tenantIndex = tryitPrefix.indexOf("/t/");
+            if (tenantIndex != -1) {
+                String tmpTryitPrefix = tryitPrefix.substring(
+                        tryitPrefix.substring(0, tryitPrefix.indexOf("/t/")).lastIndexOf("/"));
+                //Check if the  Webapp context root of WSO2 Carbon is set.
+                tryitPrefix = tryitPrefix.replaceFirst("//", "");
+                if (tryitPrefix.substring(0, tryitPrefix.indexOf("/services/")).lastIndexOf("/") > -1) {
+                    tryitPrefix = tryitPrefix.substring(
+                            tryitPrefix.substring(0, tryitPrefix.indexOf("/services/")).lastIndexOf("/"));
+                } else {
+                    tryitPrefix = tmpTryitPrefix;
+                }
+
+            } else {
+                tryitPrefix = configurationContext.getServiceContextPath() + "/";
+            }
+        }
+        return CarbonUtils.getProxyContextPath(false) + tryitPrefix + serviceName + "?tryit";
+    }
+
+    private static String[] getWsdlInformation(String serviceName,
+                                               AxisConfiguration axisConfig) throws AxisFault {
+        String ip;
+        try {
+            ip = NetworkUtils.getLocalHostname();
+        } catch (SocketException e) {
+            throw new AxisFault("Cannot get local host name", e);
+        }
+
+        //TODO Ideally, The transport on which wsdls are displayed, should be configurable.
+        TransportInDescription transportInDescription = axisConfig.getTransportIn("http");
+
+        if (transportInDescription == null) {
+            transportInDescription = axisConfig.getTransportIn("https");
+        }
+
+        if (transportInDescription != null) {
+            EndpointReference[] epr =
+                    transportInDescription.getReceiver().getEPRsForService(serviceName, ip);
+            String wsdlUrlPrefix = epr[0].getAddress();
+            if (wsdlUrlPrefix.endsWith("/")) {
+                wsdlUrlPrefix = wsdlUrlPrefix.substring(0, wsdlUrlPrefix.length() - 1);
+            }
+            return new String[]{wsdlUrlPrefix + "?wsdl", wsdlUrlPrefix + "?wsdl2"};
+        }
+        return new String[]{};
+    }
+
+    /**
+     * A utility method to check whether Axis2 uses the Servlet transport or the NIO transport
+     *
+     * @param axisConfig
+     * @return
+     */
+    private static boolean isServletTransport(AxisConfiguration axisConfig) {
+        if (!isServletTransportSet) {
+            TransportInDescription transportInDescription = axisConfig.getTransportIn("http");
+            if (transportInDescription == null) {
+                transportInDescription = axisConfig.getTransportIn("https");
+            }
+
+            if (transportInDescription != null && transportInDescription.getReceiver()
+                    instanceof HttpTransportListener) {
+                isServletTransport = true;
+            }
+
+            isServletTransportSet = true;
+        }
+        return isServletTransport;
     }
 }
