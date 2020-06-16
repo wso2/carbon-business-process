@@ -18,7 +18,7 @@ package org.wso2.carbon.bpel.ui.bpel2svg.impl;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
