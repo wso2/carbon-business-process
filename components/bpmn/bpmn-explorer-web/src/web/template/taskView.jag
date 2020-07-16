@@ -155,7 +155,7 @@
                                         <span class="glyphicon glyphicon-remove" style="float:right; font-size:85%; color:#B0B0B0"></span>
                                     </a>
                                 </div>
-                                <div><%=commentList[i].message%></div>
+                                <div><%=Encode.forJavaScript(commentList[i].message)%></div>
                             </li>
                             <%if( i == commentList.length - 11) { %>
                                 </div>
