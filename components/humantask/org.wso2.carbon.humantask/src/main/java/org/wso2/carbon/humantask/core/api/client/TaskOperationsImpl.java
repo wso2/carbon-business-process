@@ -27,8 +27,35 @@ import org.w3c.dom.Node;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.AbstractAdmin;
-import org.wso2.carbon.humantask.client.api.*;
-import org.wso2.carbon.humantask.client.api.types.*;
+import org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+import org.wso2.carbon.humantask.client.api.HumanTaskClientAPIAdminSkeletonInterface;
+import org.wso2.carbon.humantask.client.api.IllegalAccessFault;
+import org.wso2.carbon.humantask.client.api.IllegalArgumentFault;
+import org.wso2.carbon.humantask.client.api.IllegalOperationFault;
+import org.wso2.carbon.humantask.client.api.IllegalStateFault;
+import org.wso2.carbon.humantask.client.api.RecipientNotAllowedException;
+import org.wso2.carbon.humantask.client.api.TBatchResponse;
+import org.wso2.carbon.humantask.client.api.types.TAttachment;
+import org.wso2.carbon.humantask.client.api.types.TAttachmentInfo;
+import org.wso2.carbon.humantask.client.api.types.TComment;
+import org.wso2.carbon.humantask.client.api.types.TFault;
+import org.wso2.carbon.humantask.client.api.types.TOrganizationalEntity;
+import org.wso2.carbon.humantask.client.api.types.TPriority;
+import org.wso2.carbon.humantask.client.api.types.TRenderingTypes;
+import org.wso2.carbon.humantask.client.api.types.TSimpleQueryInput;
+import org.wso2.carbon.humantask.client.api.types.TStatus;
+import org.wso2.carbon.humantask.client.api.types.TTaskAbstract;
+import org.wso2.carbon.humantask.client.api.types.TTaskAuthorisationParams;
+import org.wso2.carbon.humantask.client.api.types.TTaskDetails;
+import org.wso2.carbon.humantask.client.api.types.TTaskEventType;
+import org.wso2.carbon.humantask.client.api.types.TTaskEvents;
+import org.wso2.carbon.humantask.client.api.types.TTaskHistoryFilter;
+import org.wso2.carbon.humantask.client.api.types.TTaskInstanceData;
+import org.wso2.carbon.humantask.client.api.types.TTaskOperations;
+import org.wso2.carbon.humantask.client.api.types.TTaskQueryResultSet;
+import org.wso2.carbon.humantask.client.api.types.TTaskSimpleQueryResultSet;
+import org.wso2.carbon.humantask.client.api.types.TTime;
+import org.wso2.carbon.humantask.client.api.types.TUser;
 import org.wso2.carbon.humantask.core.HumanTaskConstants;
 import org.wso2.carbon.humantask.core.dao.AttachmentDAO;
 import org.wso2.carbon.humantask.core.dao.CommentDAO;
@@ -82,11 +109,17 @@ import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.user.core.util.UserCoreUtil;
+import org.wso2.carbon.utils.ConfigurationContextService;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.xml.namespace.QName;
-import java.util.*;
-import java.util.concurrent.Callable;
 
 /**
  * The implementation of the WS Human Task API Operations.
@@ -1234,6 +1267,7 @@ public class TaskOperationsImpl extends AbstractAdmin
             IllegalAccessFault {
 
         try {
+            loadTenant();
             final Long taskId = validateTaskId(taskIdURI);
             HumanTaskServiceComponent.getHumanTaskServer().getTaskEngine().getScheduler().
                     execTransaction(new Callable<Object>() {
@@ -1771,5 +1805,42 @@ public class TaskOperationsImpl extends AbstractAdmin
         }  else {
             throw new IllegalStateFault(ex.getMessage());
         }
+    }
+
+    /**
+     * Checks whether the tenant is loaded if not loads the tenant.
+     *
+     * Note: This is required only if tenant configurations
+     * need to be redeployed.
+     */
+    private void loadTenant() {
+
+        String tenantDomain = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+
+        if (MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(tenantDomain)) {
+            return;
+        }
+
+        ConfigurationContextService configurationContextService = getConfigurationContextService();
+        if (configurationContextService == null) {
+            log.warn("ConfigurationContextService is not available cannot attempt to load tenant. " +
+                    "Proceeding without tenant loading for domain " + tenantDomain);
+            return;
+        }
+        Set<String> loadedTenants = TenantAxisUtils.getTenantConfigurationContexts(
+                configurationContextService.getServerConfigContext()).keySet();
+        if (!loadedTenants.contains(tenantDomain)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Tenant: " + tenantDomain + " is not loaded. Therefore attempting to load the tenant.");
+            }
+            TenantAxisUtils.getTenantConfigurationContext(tenantDomain,
+                    configurationContextService.getServerConfigContext());
+        }
+    }
+
+    private ConfigurationContextService getConfigurationContextService() {
+
+        return (ConfigurationContextService)PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                .getOSGiService(ConfigurationContextService.class, null);
     }
 }

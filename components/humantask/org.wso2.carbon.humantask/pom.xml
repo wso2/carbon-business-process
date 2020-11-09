@@ -327,6 +327,8 @@
                             org.wso2.carbon.bpel.common.*;
                             version="${carbon.business-process.imp.pkg.version}",
                             org.apache.axis2.*; version="${axis2.osgi.version.range}",
+                            org.wso2.carbon.core; version="${carbon.kernel.imp.pkg.version}",
+                            org.wso2.carbon.utils; version="${carbon.kernel.imp.pkg.version}",
                             org.osgi.service.component.*;version="${imp.package.version.osgi.services}",
                             *;resolution:=optional
                         </Import-Package>
