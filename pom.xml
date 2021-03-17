@@ -321,12 +321,6 @@
                 <artifactId>json-simple</artifactId>
                 <version>${simple-json.version}</version>
             </dependency>
-            <!-- Feature related dependencies -->
-            <dependency>
-                <groupId>org.springframework.ws.wso2</groupId>
-                <artifactId>spring.framework</artifactId>
-                <version>${orbit.version.spring}</version>
-            </dependency>
 
             <!--CXF runtime environment-->
             <dependency>
