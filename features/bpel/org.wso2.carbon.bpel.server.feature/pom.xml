@@ -236,6 +236,9 @@
                                 <importBundleDef>antlr.wso2:antlr</importBundleDef>
                                 <importBundleDef>rhino.wso2:js</importBundleDef>
                                 <importBundleDef>
+                                    org.springframework.ws.wso2:spring.framework:${orbit.version.spring}
+                                </importBundleDef>
+                                <importBundleDef>
                                     org.wso2.carbon.business-process:org.wso2.carbon.bpel.common
                                 </importBundleDef>
                             </importBundles>
