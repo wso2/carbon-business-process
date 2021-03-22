@@ -19,7 +19,7 @@
     <parent>
         <artifactId>unifiedendpoint</artifactId>
         <groupId>org.wso2.carbon.business-process</groupId>
-        <version>4.5.41</version>
+        <version>4.5.42-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
