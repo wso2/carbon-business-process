@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.bpmn.core.ActivitiEngineBuilder;
 import org.wso2.carbon.bpmn.core.BPMNEngineService;
 import org.wso2.carbon.bpmn.core.BPMNServerHolder;
+import org.wso2.carbon.bpmn.core.MailEventListener;
 import org.wso2.carbon.bpmn.core.deployment.TenantManager;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineServerStartupObserver;
 import org.wso2.carbon.bpmn.core.integration.BPMNEngineWaitBeforeShutdownObserver;
@@ -41,10 +42,11 @@ import org.wso2.carbon.utils.WaitBeforeShutdownObserver;
 public class BPMNServiceComponent {
 
     private static Log log = LogFactory.getLog(BPMNServiceComponent.class);
+    private MailEventListener mailEventListener;
 
     @Activate
     protected void activate(ComponentContext ctxt) {
-
+        mailEventListener = new MailEventListener();
         log.info("Initializing the BPMN core component...");
         try {
             BundleContext bundleContext = ctxt.getBundleContext();
@@ -55,6 +57,9 @@ public class BPMNServiceComponent {
             /*BPMNRestExtensionHolder restHolder = BPMNRestExtensionHolder.getInstance();
 
             restHolder.setRestInvoker(new RESTInvoker());*/
+
+            ActivitiEngineBuilder.getProcessEngine().getRuntimeService().addEventListener(mailEventListener);
+
             BPMNEngineServiceImpl bpmnEngineService = new BPMNEngineServiceImpl();
             bpmnEngineService.setProcessEngine(ActivitiEngineBuilder.getProcessEngine());
             bundleContext.registerService(BPMNEngineService.class, bpmnEngineService, null);

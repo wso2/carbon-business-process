@@ -1337,14 +1337,7 @@ public class WorkflowTaskService extends BaseTaskService {
                 variablesToSet.put(var.getName(), actualVariableValue);
             }
 
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(javax.mail.Message.class.getClassLoader());
-            try {
-                taskService.complete(task.getId(), variablesToSet);
-            } finally {
-                Thread.currentThread().setContextClassLoader(classLoader);
-            }
-
+            taskService.complete(task.getId(), variablesToSet);
         } else {
             taskService.complete(task.getId());
         }
