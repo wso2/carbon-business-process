@@ -164,7 +164,7 @@
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
-                <artifactId>asm-all</artifactId>
+                <artifactId>asm</artifactId>
             </dependency>
             <dependency>
                 <groupId>cglib.wso2</groupId>
