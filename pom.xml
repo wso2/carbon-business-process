@@ -1081,6 +1081,18 @@
             </dependency>
 
             <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-commons</artifactId>
+                <version>${org.ow2.asm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-tree</artifactId>
+                <version>${org.ow2.asm.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>${org.codehaus.groovy.version}</version>

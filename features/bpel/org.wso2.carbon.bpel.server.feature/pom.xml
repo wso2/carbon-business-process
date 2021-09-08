@@ -201,6 +201,8 @@
                             <importBundles>
                                 <importBundleDef>org.wso2.orbit.org.apache.ode:ode</importBundleDef>
                                 <importBundleDef>org.ow2.asm:asm</importBundleDef>
+                                <importBundleDef>org.ow2.asm:asm-commons</importBundleDef>
+                                <importBundleDef>org.ow2.asm:asm-tree</importBundleDef>
                                 <importBundleDef>cglib.wso2:cglib</importBundleDef>
                                 <!--importBundleDef>org.apache.axis2.wso2:axis2-jibx</importBundleDef-->
                                 <importBundleDef>org.jibx.wso2:jibx</importBundleDef>
