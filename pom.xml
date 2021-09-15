@@ -1076,8 +1076,20 @@
 
             <dependency>
                 <groupId>org.ow2.asm</groupId>
-                <artifactId>asm-all</artifactId>
-                <version>${org.ow2.asm.asm-all.version}</version>
+                <artifactId>asm</artifactId>
+                <version>${org.ow2.asm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-commons</artifactId>
+                <version>${org.ow2.asm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-tree</artifactId>
+                <version>${org.ow2.asm.version}</version>
             </dependency>
 
             <dependency>
@@ -1604,7 +1616,7 @@
         <jsonpath.wso2.version>2.4.0.wso2v2</jsonpath.wso2.version>
         <json.smart.version>2.3</json.smart.version>
         <accessors-smart.version>1.2</accessors-smart.version>
-        <org.ow2.asm.asm-all.version>5.2</org.ow2.asm.asm-all.version>
+        <org.ow2.asm.version>9.2</org.ow2.asm.version>
 
 
         <!-- Servlet API -->
