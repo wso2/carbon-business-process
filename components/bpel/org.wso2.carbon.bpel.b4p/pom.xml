@@ -166,7 +166,7 @@
                                 </path>
 
                                 <echo message="########### Create B4P Coordination Database ##############" />
-                                <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="" url="jdbc:h2:${basedir}/target/database/b4ph2db;create=true" userid="sa">
+                                <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="" url="jdbc:h2:${basedir}/target/database/b4ph2db" userid="sa">
                                     <classpath>
                                         <path refid="h2.classpath" />
                                     </classpath>
