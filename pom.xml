@@ -1645,7 +1645,7 @@
         <project.scm.id>scm-server</project.scm.id>
 
         <!-- For HT Rendering -->
-        <com.predic8.soa-model-core.wso2.version>1.6.0.wso2v2</com.predic8.soa-model-core.wso2.version>
+        <com.predic8.soa-model-core.wso2.version>1.6.4.wso2v1</com.predic8.soa-model-core.wso2.version>
         <org.codehaus.groovy.version>2.4.8</org.codehaus.groovy.version>
 
         <!--For BPMN JSON-->
