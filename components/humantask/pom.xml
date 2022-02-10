@@ -92,7 +92,7 @@
             <artifactId>org.wso2.carbon.ui</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.xmlbeans.wso2</groupId>
+            <groupId>org.wso2.orbit.org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
         </dependency>
         <dependency>

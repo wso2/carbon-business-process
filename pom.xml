@@ -622,7 +622,7 @@
                 <version>${carbon.business-process.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.xmlbeans.wso2</groupId>
+                <groupId>org.wso2.orbit.org.apache.xmlbeans</groupId>
                 <artifactId>xmlbeans</artifactId>
                 <version>${orbit.version.org.apache.xmlbeans.wso2.xmlbeans}</version>
             </dependency>
@@ -1586,7 +1586,7 @@
         <!--version.json.wso2>2.0.0.wso2v1</version.json.wso2-->
 
         <!--For BPS-->
-        <orbit.version.org.apache.xmlbeans.wso2.xmlbeans>2.3.0.wso2v1</orbit.version.org.apache.xmlbeans.wso2.xmlbeans>
+        <orbit.version.org.apache.xmlbeans.wso2.xmlbeans>3.1.0.wso2v1</orbit.version.org.apache.xmlbeans.wso2.xmlbeans>
         <version.log4j>1.2.17</version.log4j>
         <geronimo.transaction.version>2.0.1.wso2v1</geronimo.transaction.version>
         <!--  <org.eclipse.osgi.version>3.5.0.v20090520</org.eclipse.osgi.version>-->
