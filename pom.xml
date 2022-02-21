@@ -1573,7 +1573,7 @@
 
         <!-- J2EE Runtime Enviroment -->
         <!--myfaces.version>2.1.11</myfaces.version-->
-        <openjpa.version>2.2.0-wso2v1</openjpa.version>
+        <openjpa.version>3.0.0</openjpa.version>
         <hibernate.version>4.2.0.Final</hibernate.version>
         <jpa-commons-pool.version>1.5.4</jpa-commons-pool.version>
         <serp.version>1.13.1</serp.version>
