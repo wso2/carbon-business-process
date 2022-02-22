@@ -97,7 +97,7 @@
 
                                 <echo message="########### Create HumanTask Database ##############" />
 
-                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/resources/conf/jpadb;create=true" userid="wso2carbon" password="wso2carbon" autocommit="true" onerror="continue">
+                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/resources/conf/jpadb" userid="wso2carbon" password="wso2carbon" autocommit="true" onerror="continue">
                                     <classpath>
                                         <path refid="h2.classpath" />
                                     </classpath>
