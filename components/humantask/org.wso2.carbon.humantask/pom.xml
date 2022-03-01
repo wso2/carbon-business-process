@@ -97,7 +97,7 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.orbit.com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <artifactId>h2-engine</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.business-process</groupId>
@@ -150,7 +150,7 @@
                                 </path>
 
                                 <echo message="########### Create HT Database ##############" />
-                                <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="" url="jdbc:h2:${basedir}/target/database/hth2db;create=true" userid="sa">
+                                <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="" url="jdbc:h2:${basedir}/target/database/hth2db" userid="sa">
                                     <classpath>
                                         <path refid="h2.classpath" />
                                     </classpath>

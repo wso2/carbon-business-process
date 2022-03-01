@@ -77,7 +77,7 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.orbit.com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <artifactId>h2-engine</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -138,7 +138,7 @@
                                     <path refid="maven.test.classpath" />
                                 </path>
                                 <echo message="########### Create Test Database ##############" />
-                                <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="wso2carbon" url="jdbc:h2:${basedir}/target/repository/database/attachmentdb;create=true" userid="wso2carbon">
+                                <sql autocommit="true" driver="org.h2.Driver" onerror="continue" password="wso2carbon" url="jdbc:h2:${basedir}/target/repository/database/attachmentdb" userid="wso2carbon">
                                     <classpath>
                                         <path refid="h2.classpath" />
                                     </classpath>
