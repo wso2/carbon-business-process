@@ -222,7 +222,7 @@
                                 <!--For HT Rendering-->
                                 <importBundleDef>org.wso2.orbit.com.predic8:soa.model.core:${com.predic8.soa-model-core.wso2.version}</importBundleDef>
                                 <importBundleDef>org.ow2.asm:asm-all:${org.ow2.asm.asm-all.version}</importBundleDef>
-                                <importBundleDef>org.codehaus.groovy:groovy-all:${org.codehaus.groovy.version}</importBundleDef>
+                                <importBundleDef>org.codehaus.groovy.wso2:groovy-all:${org.codehaus.groovy.wso2.version}</importBundleDef>
                             </importBundles>
                             <importFeatures>
                                 <importFeatureDef>
