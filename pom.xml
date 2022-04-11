@@ -323,7 +323,7 @@
             </dependency>
             <!-- Feature related dependencies -->
             <dependency>
-                <groupId>org.springframework.ws.wso2</groupId>
+                <groupId>org.wso2.orbit.org.springframework.ws</groupId>
                 <artifactId>spring.framework</artifactId>
                 <version>${orbit.version.spring}</version>
             </dependency>
@@ -1087,9 +1087,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.wso2.orbit.org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
-                <version>${org.codehaus.groovy.version}</version>
+                <version>${org.wso2.orbit.org.codehaus.groovy.version}</version>
             </dependency>
 
             <dependency>
@@ -1523,7 +1523,7 @@
         <geronimo-spec-jms>1.1.0.rc4-wso2v1</geronimo-spec-jms>
         <orbit.version.infinispan>5.1.2.wso2v1</orbit.version.infinispan>
         <orbit.version.h2.engine>1.4.199.wso2v1</orbit.version.h2.engine>
-        <orbit.version.spring>3.2.9.wso2v2</orbit.version.spring>
+        <orbit.version.spring>5.3.18.wso2v1</orbit.version.spring>
         <orbit.version.woden>1.0.0.M9-wso2v1</orbit.version.woden>
         <axion.wso2>1.0.0.M3-dev-wso2v1</axion.wso2>
         <tranql-connector>1.8.wso2v1</tranql-connector>
@@ -1646,7 +1646,7 @@
 
         <!-- For HT Rendering -->
         <com.predic8.soa-model-core.wso2.version>1.6.0.wso2v2</com.predic8.soa-model-core.wso2.version>
-        <org.codehaus.groovy.version>2.4.8</org.codehaus.groovy.version>
+        <org.wso2.orbit.org.codehaus.groovy.version>2.4.8.wso2v2</org.wso2.orbit.org.codehaus.groovy.version>
 
         <!--For BPMN JSON-->
         <orbit.fasterxml.jackson.version>2.9.8.wso2v1</orbit.fasterxml.jackson.version>
