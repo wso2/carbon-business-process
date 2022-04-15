@@ -1416,8 +1416,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <carbon.business-process.version>4.5.52-SNAPSHOT</carbon.business-process.version>
-        <carbon.business-process.imp.pkg.version>[4.5.0,4.6.0)</carbon.business-process.imp.pkg.version>
+        <carbon.business-process.version>4.6.0-SNAPSHOT</carbon.business-process.version>
+        <carbon.business-process.imp.pkg.version>[4.5.0,4.7.0)</carbon.business-process.imp.pkg.version>
         <carbon.business-process.exp.pkg.version>${carbon.business-process.version}</carbon.business-process.exp.pkg.version>
 
         <version.jettison>1.3.4</version.jettison>
