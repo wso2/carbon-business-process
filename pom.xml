@@ -64,9 +64,20 @@
                 <version>${version.org.wso2.orbit.javax.activation}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.orbit.com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>${hazelcast.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.core</artifactId>
                 <version>${carbon.kernel.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.wso2.orbit.com.hazelcast</groupId>
+                        <artifactId>hazelcast</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
@@ -1666,6 +1677,7 @@
         <xbean.reflect.version>3.11</xbean.reflect.version>
         <version.org.wso2.orbit.javax.activation>1.1.1.wso2v2</version.org.wso2.orbit.javax.activation>
         <apache.felix.scr.ds.annotations.version>1.2.4</apache.felix.scr.ds.annotations.version>
+        <hazelcast.version>4.2.5.wso2v1</hazelcast.version>
     </properties>
 
 
