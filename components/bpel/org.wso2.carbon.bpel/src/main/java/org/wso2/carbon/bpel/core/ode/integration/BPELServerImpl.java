@@ -17,10 +17,9 @@
 package org.wso2.carbon.bpel.core.ode.integration;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.Member;
-import com.hazelcast.core.MemberAttributeEvent;
-import com.hazelcast.core.MembershipEvent;
-import com.hazelcast.core.MembershipListener;
+import com.hazelcast.cluster.Member;
+import com.hazelcast.cluster.MembershipEvent;
+import com.hazelcast.cluster.MembershipListener;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
@@ -1153,15 +1152,6 @@ public final class BPELServerImpl implements BPELServer, Observer {
                     log.debug("Removed the member: " + leftMemberID + " from the distributed map (WSO2_BPS_NODE_ID_MAP)");
                 }
                 log.info("Member " + membershipEvent.getMember() + "[" + leftMemberID + "] removed from WSO2_BPS_NODE_ID_MAP");
-            }
-        }
-
-        @Override
-        public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
-            // Noting to do here.
-            if (log.isDebugEnabled()) {
-                log.debug("ODEClusterImpl#memberAttributeChanged Member attribute change from BPS Cluster: " +
-                        memberAttributeEvent.getMember());
             }
         }
     }
