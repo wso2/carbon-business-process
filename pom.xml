@@ -1553,7 +1553,7 @@
         <wagon.ssh.version>2.1</wagon.ssh.version>
 
         <!-- CXF Runtime Bundles -->
-        <spring.version>3.0.7.RELEASE</spring.version>
+        <spring.version>3.2.5.RELEASE</spring.version>
         <!--carbon.cxf.webapp.ext>1.0.1</carbon.cxf.webapp.ext-->
         <aopalliance.version>1.0</aopalliance.version>
         <!--<wsdl4j.version>1.6.3</wsdl4j.version>-->
