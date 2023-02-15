@@ -1623,7 +1623,7 @@
         <snakeyaml.version>1.23</snakeyaml.version>
         <org.wso2.orbit.org.tinyjee.jgraphx.version>1.10.4.1.wso2v1</org.wso2.orbit.org.tinyjee.jgraphx.version>
         <commons.io.version>2.0.1</commons.io.version>
-        <commons.fileupload.version>1.2.2</commons.fileupload.version>
+        <commons.fileupload.version>1.4</commons.fileupload.version>
         <jsonpath.wso2.version>2.4.0.wso2v2</jsonpath.wso2.version>
         <json.smart.version>2.3</json.smart.version>
         <accessors-smart.version>1.2</accessors-smart.version>
