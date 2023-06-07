@@ -22,7 +22,7 @@
             <ResourceId>/permission/admin/manage/attachment</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
-            <DisplayName>Monitor BPEL</DisplayName>
+            <DisplayName>Monitor Attachment</DisplayName>
             <ResourceId>/permission/admin/monitor/attachment</ResourceId>
         </ManagementPermission>
     </ManagementPermissions>
