@@ -1670,7 +1670,7 @@
         <!--WSO2 Encoder Version-->
         <orbit.encoder.wso2.version>1.2.0.wso2v2</orbit.encoder.wso2.version>
 
-        <com.thoughtworks.xstream.version>1.4.19</com.thoughtworks.xstream.version>
+        <com.thoughtworks.xstream.version>1.4.20</com.thoughtworks.xstream.version>
         <cglib.version>2.1</cglib.version>
         <geronimo.crypto.version>3.0.1</geronimo.crypto.version>
         <xbean.bundleutils.version>3.13</xbean.bundleutils.version>
