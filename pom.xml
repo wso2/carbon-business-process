@@ -1547,7 +1547,7 @@
         <xalan.wso2.version>2.7.0.2wso2v1</xalan.wso2.version>
         <rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
         <cglib.wso2.version>2.2.wso2v1</cglib.wso2.version>
-        <bcel.wso2.version>5.2.0.wso2v1</bcel.wso2.version>
+        <bcel.wso2.version>6.7.0.wso2v1</bcel.wso2.version>
         <jibx.wso2.version>1.2.1.wso2v1</jibx.wso2.version>
         <simple-json.version>1.1.wso2v1</simple-json.version>
         <wagon.ssh.version>2.1</wagon.ssh.version>
