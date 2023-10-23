@@ -22,7 +22,7 @@
     <groupId>org.wso2.carbon.business-process</groupId>
     <artifactId>carbon-business-process</artifactId>
     <packaging>pom</packaging>
-    <version>4.5.67-SNAPSHOT</version>
+    <version>4.5.67</version>
     <name>WSO2 Carbon Business Process Aggregator Pom</name>
     <url>http://wso2.org</url>
 
@@ -1302,7 +1302,7 @@
         <url>https://github.com/wso2/carbon-business-process.git</url>
         <developerConnection>scm:git:https://github.com/wso2/carbon-business-process.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/carbon-business-process.git</connection>
-        <tag>HEAD</tag>
+        <tag>v4.5.67</tag>
     </scm>
 
     <!--|
@@ -1427,7 +1427,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <carbon.business-process.version>4.5.67-SNAPSHOT</carbon.business-process.version>
+        <carbon.business-process.version>4.5.67</carbon.business-process.version>
         <carbon.business-process.imp.pkg.version>[4.5.0,4.6.0)</carbon.business-process.imp.pkg.version>
         <carbon.business-process.exp.pkg.version>${carbon.business-process.version}</carbon.business-process.exp.pkg.version>
 
