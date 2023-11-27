@@ -1104,7 +1104,7 @@
             </dependency>
 
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.wso2.orbit.org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>${org.codehaus.groovy.version}</version>
             </dependency>
@@ -1662,7 +1662,7 @@
 
         <!-- For HT Rendering -->
         <com.predic8.soa-model-core.wso2.version>1.6.4.wso2v1</com.predic8.soa-model-core.wso2.version>
-        <org.codehaus.groovy.version>2.4.21</org.codehaus.groovy.version>
+        <org.codehaus.groovy.version>3.0.19.wso2v1</org.codehaus.groovy.version>
 
         <!--For BPMN JSON-->
         <orbit.fasterxml.jackson.version>2.9.8.wso2v1</orbit.fasterxml.jackson.version>
