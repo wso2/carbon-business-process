@@ -116,7 +116,7 @@
             <artifactId>soa.model.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
+            <groupId>org.wso2.orbit.org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
         <dependency>
