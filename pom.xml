@@ -1561,7 +1561,7 @@
         <!--imp.pkg.version.xmlsec>[1.5.5,2)</imp.pkg.version.xmlsec-->
         <xmlschema.core.version>2.0.3</xmlschema.core.version>
         <xml.resolver.version>1.2</xml.resolver.version>
-        <wss4j.version>1.5.11-wso2v18</wss4j.version>
+        <wss4j.version>1.6.17</wss4j.version>
         <!--wss4j.osgi.version>1.5.11-wso2v9</wss4j.osgi.version-->
         <neethi.version>3.0.2</neethi.version>
         <!--<neethi.osgi.version>2.0.4.wso2v4</neethi.osgi.version>-->
