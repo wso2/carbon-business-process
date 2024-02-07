@@ -1455,7 +1455,7 @@
         <carbon.deployment.imp.pkg.version>[4.9.0, 5.0.0)</carbon.deployment.imp.pkg.version>
 
         <!-- Carbon registry version -->
-        <carbon.registry.version>4.7.24</carbon.registry.version>
+        <carbon.registry.version>4.7.31</carbon.registry.version>
         <carbon.registry.imp.pkg.version>[4.7.0,5.0.0)</carbon.registry.imp.pkg.version>
 
         <!-- Carbon Multi-tenancy version-->
