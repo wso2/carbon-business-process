@@ -1448,7 +1448,7 @@
 
         <!-- Carbon identity version -->
         <carbon.identity.framework.version>5.15.17</carbon.identity.framework.version>
-        <carbon.identity.imp.pkg.version>[5.13.0, 6.0.0)</carbon.identity.imp.pkg.version>
+        <carbon.identity.imp.pkg.version>[5.13.0, 8.0.0)</carbon.identity.imp.pkg.version>
 
         <!-- Carbon deployment version -->
         <carbon.deployment.version>4.9.15</carbon.deployment.version>
