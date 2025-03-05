@@ -19,6 +19,7 @@ package org.wso2.carbon.bpel.deployer.services;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.bpel.core.BPELConstants;
@@ -68,9 +69,7 @@ public class BPELUploader extends AbstractAdmin {
         for (UploadedFileItem uploadedFile : fileItems) {
             String fileName = uploadedFile.getFileName();
 
-            if (fileName == null || fileName.equals("")) {
-                throw new AxisFault("Invalid file name. File name is not available");
-            }
+            validateFileName(fileName, bpelTemp);
 
             if (uploadedFile.getFileType().equals(BPELConstants.BPEL_PACKAGE_EXTENSION)) {
                 try {
@@ -85,6 +84,35 @@ public class BPELUploader extends AbstractAdmin {
             }
         }
 
+    }
+
+    /**
+     * Validate the filename to ensure that it is not null, empty, and does not contain path traversal.
+     *
+     * @param fileName     The name of the file.
+     * @param bpelTempPath The temporary directory path.
+     * @throws AxisFault If the file name is invalid.
+     */
+    private void validateFileName(String fileName, String bpelTempPath) throws AxisFault {
+
+        if (StringUtils.isBlank(fileName)) {
+            throw new AxisFault("Invalid file name. File name is not available.");
+        }
+
+        String tempDirCanonical, tempFileCanonical;
+
+        try {
+            // Resolve the canonical paths of the temporary directory and the file.
+            tempDirCanonical = new File(bpelTempPath).getCanonicalPath();
+            tempFileCanonical = new File(bpelTempPath, fileName).getCanonicalPath();
+        } catch (IOException e) {
+            throw new AxisFault("IOError: File name validation failed.", e);
+        }
+
+        // Verify if the file is in the intended temporary directory.
+        if (!tempFileCanonical.startsWith(tempDirCanonical)) {
+            throw new AxisFault("Invalid file name. Attempt to create file outside of the designated directories.");
+        }
     }
 
     private void writeResource(DataHandler dataHandler, String destPath, String fileName,
